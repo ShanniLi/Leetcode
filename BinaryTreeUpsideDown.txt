@@ -1,0 +1,171 @@
+/*
+
+http://leetcode.com/onlinejudge
+http://bangbingsyb.blogspot.com/2014/11/leetcode-binary-tree-upside-down.html
+
+Given a binary tree where all the right nodes are either leaf nodes with a sibling (a left node that shares the same parent node) or empty, flip it upside down and turn it into a tree where the original right nodes turned into left leaf nodes. Return the new root.
+For example:
+Given a binary tree {1,2,3,4,5},
+    1
+   / \
+  2   3
+ / \
+4   5
+return the root of the binary tree [4,5,2,#,#,3,1].
+   4
+  / \
+ 5   2
+    / \
+   3   1  
+
+*/
+
+import java.util.*;
+
+/**
+ * Definition for binary tree
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+
+
+
+import java.utils.*;
+class Solution {
+
+   protected static void test() {
+        Solution sol = new Solution();
+        
+        int[] A = {4, 5, 2, '#', '#', 3, 1};
+        print(tree2Array(array2Tree(A)));
+        
+        int[] A2 = {1,2,3,4,5};
+        print(tree2Array(array2Tree(A2)));
+        
+        print(tree2Array(sol.upsideDownBinaryTree(array2Tree(A2))));
+    }
+
+    protected static class TreeNode {
+        int val;
+        TreeNode left;
+        TreeNode right;
+        TreeNode(int x) { val = x; }
+    }
+    
+    protected static void print(List<Integer> list) {
+        for (Integer v : list) {
+            System.out.print(v);
+            System.out.print(", ");
+        }
+        
+        System.out.println();
+    }
+
+    protected static List<Integer> tree2Array(TreeNode root) {
+        List<Integer> list = new ArrayList<Integer>();
+        
+        List<TreeNode> cur = new ArrayList<TreeNode>();
+        cur.add(root);
+        list.add(root.val);
+        
+        while (!cur.isEmpty()) {
+            List<TreeNode> next = new ArrayList<TreeNode>();
+            for (TreeNode n : cur) {
+                if (n.left == null) {
+                    list.add((int)'#');
+                } else {
+                    next.add(n.left);
+                    list.add(n.left.val);
+                }
+                
+                if (n.right == null) {
+                    list.add((int)'#');
+                } else {
+                    next.add(n.right);
+                    list.add(n.right.val);
+                }
+            }
+            
+            cur = next;
+        }
+        
+        while (!list.isEmpty()) {
+            if (list.get(list.size() - 1) == (int)'#') {
+                list.remove(list.size() - 1);
+            } else {
+                break;
+            }
+        }
+        
+        return list;
+    }
+
+    protected static TreeNode array2Tree(int[] arr) {
+        TreeNode root = new TreeNode(arr[0]);
+        List<TreeNode> cur = new ArrayList<TreeNode>();
+        cur.add(root);
+        
+        int i = 1;
+        boolean flag = true;
+        while (flag) {
+            List<TreeNode> next = new ArrayList<TreeNode>();
+            for (TreeNode n : cur) {
+                if (i == arr.length) {
+                    flag = false;
+                    break;
+                }
+                
+                n.left = arr[i] != '#' ? new TreeNode(arr[i]) : null;
+                if (n.left != null) {
+                    next.add(n.left);
+                }
+                i++;
+                
+                if (i == arr.length) {
+                    flag = false;
+                    break;
+                }
+                
+                n.right = arr[i] != '#' ? new TreeNode(arr[i]) : null;
+                if (n.right != null) {
+                    next.add(n.right);
+                }
+                i++;
+            }
+            
+            cur = next;
+        }
+        
+        return root;
+    }
+
+    protected TreeNode res;
+
+    protected TreeNode upsideDown(TreeNode root) {
+    
+        if (root.left == null) {
+            if (res == null) {
+                res = root;
+            }
+            
+            return root;
+        }
+        
+        TreeNode parent = upsideDown(root.left);
+        parent.left = root.right;
+        parent.right = root;
+        root.left = null;
+        root.right = null;
+        return root;
+    }
+
+    public TreeNode upsideDownBinaryTree(TreeNode root) {
+        res = null;
+        upsideDown(root);
+        return res;
+    }
+}
