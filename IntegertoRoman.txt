@@ -1,0 +1,142 @@
+/*
+
+http://leetcode.com/onlinejudge
+https://oj.leetcode.com/problems/integer-to-roman/
+http://en.wikipedia.org/wiki/Roman_numerals
+
+Given an integer, convert it to a roman numeral.
+
+Input is guaranteed to be within the range from 1 to 3999.
+
+
+Symbol	Value
+I	1
+V	5
+X	10
+L	50
+C	100
+D	500
+M	1,000
+
+
+*/
+
+import java.util.*;
+
+public class Solution {
+
+    public static void test() {
+        Solution sol = new Solution();
+        
+        // "XII"
+        System.out.println(sol.intToRoman(12));
+        // "MDIX"
+        System.out.println(sol.intToRoman(1509));
+    }
+
+    private final char[] table = new char[] { 'M', 'D', 'C', 'L', 'X', 'V', 'I' };
+
+    protected String repeat(char ch, int count) {
+        StringBuilder sb = new StringBuilder();
+        while (count-- > 0) {
+            sb.append(ch);
+        }
+        
+        return sb.toString();
+    }
+    
+    public String intToRoman(int num) {
+        if (num == 0) return "";
+        
+        int scale = 1000;
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < table.length; i += 2) {
+            int v = num / scale;
+            num = num % scale;
+            scale = scale / 10;
+            
+            if (v == 9) {
+                sb.append(table[i]);
+                sb.append(table[i - 2]);
+            } else if (v >= 5) {
+                sb.append(table[i - 1]);
+                sb.append(repeat(table[i], v - 5));
+            } else if (v == 4) {
+                sb.append(table[i]);
+                sb.append(table[i - 1]);
+            } else {
+                sb.append(repeat(table[i], v));
+            }
+        }
+        
+        return sb.toString();
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+public class Solution {
+
+    private final char[] table = new char[] { 'M', 'D', 'C', 'L', 'X', 'V', 'I' };
+
+    public String repeat(char ch, int count) {
+        StringBuilder sb = new StringBuilder();
+        while (count-- != 0) sb.append(ch);
+        return sb.toString();
+    }
+
+    public String intToRoman(int num) {
+        if (num <= 0 || num > 3999) return "";
+        
+        StringBuilder sb = new StringBuilder();
+        int scale = 1000;
+        
+        for (int i = 0; i < table.length; i += 2) {
+            int d = num / scale;
+            num = num % scale;
+            scale = scale / 10;
+            if (d == 9) {
+                sb.append(table[i]);
+                sb.append(table[i - 2]);
+            } else if (d >= 5) {
+                sb.append(table[i - 1]);
+                sb.append(repeat(table[i], d - 5));
+            } else if (d == 4) {
+                sb.append(table[i]);
+                sb.append(table[i - 1]);
+            } else {
+                sb.append(repeat(table[i], d));
+            }
+        }
+        
+        return sb.toString();
+    }
+}
+
+
+
+
+
+
+

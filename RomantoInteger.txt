@@ -1,0 +1,154 @@
+/*
+
+http://leetcode.com/onlinejudge
+https://oj.leetcode.com/problems/roman-to-integer/
+http://en.wikipedia.org/wiki/Roman_numerals
+http://literacy.kent.edu/Minigrants/Cinci/romanchart.htm
+
+Given a roman numeral, convert it to an integer.
+
+Input is guaranteed to be within the range from 1 to 3999.
+
+
+Symbol	Value
+I	1
+V	5
+X	10
+L	50
+C	100
+D	500
+M	1,000
+
+
+Observation:
+Better solution: from right to left, if charAt(i) < charAt(i + 1), 
+then sum - charAt(i), else sum + charAt(i)
+
+*/
+
+import java.util.*;
+
+public class Solution {
+
+    protected static void test() {
+        Solution sol = new Solution();
+        
+        // 12
+        System.out.println(sol.romanToInt("XII"));
+        // 1509
+        System.out.println(sol.romanToInt("MDIX"));
+    }
+
+    protected int value(char ch) {
+        switch (ch) {
+            case 'M': return 1000;
+            case 'D': return 500;
+            case 'C': return 100;
+            case 'L': return 50;
+            case 'X': return 10;
+            case 'V': return 5;
+            case 'I': return 1;
+            default: return 0;
+        }
+    }
+
+    public int romanToInt(String s) {
+        if (s == null) return 0;
+        s = s.trim();
+        if (s.length() == 0) return 0;
+        int n = s.length();
+        int num = value(s.charAt(n - 1));
+        
+        for (int i = n - 2; i >= 0; i--) {
+            int nextV = value(s.charAt(i + 1));
+            int v = value(s.charAt(i));
+            if (v >= nextV) {
+                num += v;
+            } else {
+                num -= v;
+            }
+        }
+        
+        return num;
+    }
+}
+
+
+public class Solution {
+
+    protected int value(char ch) {
+        switch (ch) {
+            case 'M': return 1000;
+            case 'D': return 500;
+            case 'C': return 100;
+            case 'L': return 50;
+            case 'X': return 10;
+            case 'V': return 5;
+            case 'I': return 1;
+            default: return 0;
+        }
+    }
+    
+    protected class Chars {
+        int pos;
+        int value;
+        int count;
+    }
+    
+    protected Chars parse(String s, int i) {
+        
+        Chars res = new Chars();
+        res.value = value(s.charAt(i));
+        res.count = 1;
+        for (int j = i; j < s.length() - 1; j++) {
+            
+            if (s.charAt(j) != s.charAt(j + 1)) break; 
+            
+            res.count++;
+        }
+        
+        res.pos = i + res.count;
+        
+        return res;
+    }
+
+    public int romanToInt(String s) {
+        if (s == null) return 0;
+        s = s.trim();
+        if (s.length() == 0) return 0;
+        
+        int sum = 0;
+        Chars prev = null;
+        for (int i = 0; i < s.length(); i++) {
+            Chars r = parse(s, i);
+            i = r.pos - 1;
+            if (prev == null) {
+                prev = r;
+                continue;
+            }
+            
+            if (prev.value > r.value) {
+                if (r.value * 5 == prev.value) {
+                    sum = sum + prev.value * prev.count + r.value * r.count;
+                    prev = null;
+                } else {
+                    sum = sum + prev.value * prev.count;
+                    prev = r;
+                }
+            } else {
+                sum = sum + r.value * r.count - prev.value * prev.count;
+                prev = null;
+            }
+        }
+        
+        if (prev != null) {
+            sum = sum + prev.value * prev.count;
+        }
+        
+        return sum;
+    }
+}
+
+
+
+
